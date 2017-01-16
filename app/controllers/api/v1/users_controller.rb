@@ -41,14 +41,15 @@ class Api::V1::UsersController < ApplicationController
   end
 
   private
+  def user_params
+    params.require(:user).require(:password_confirmation)
+    params.require(:user).permit(:email, :username, :password,
+      :password_confirmation, :firstname, :lastname,
+      :birth_date, :phone_number)
+  end
 
-    def user_params
-      params.require(:user).require(:password_confirmation)
-      params.require(:user).permit(:email, :username, :password, :password_confirmation)
-    end
-
-    def user_update_params
-      params.require(:user).require(:password)
-      params.require(:user).permit(:email, :username, :password, :password_confirmation)
-    end
+  def user_update_params
+    params.require(:user).require(:password)
+    params.require(:user).permit(:email, :username, :password, :password_confirmation)
+  end
 end

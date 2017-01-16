@@ -11,4 +11,9 @@ class User < ActiveRecord::Base
       self.auth_token = Devise.friendly_token
     end while self.class.exists?(auth_token: auth_token)
   end
+
+  def birth_date=(val)
+    date = Date.strptime(val, "%m/%d/%Y") if val.present?
+    write_attribute(:birth_date, date)
+  end
 end
