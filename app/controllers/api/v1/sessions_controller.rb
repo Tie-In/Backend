@@ -2,10 +2,10 @@ class Api::V1::SessionsController < ApplicationController
 	def create
     user_password = params[:session][:password]
     user_email = params[:session][:email]
-    user = user_email.present? && User.find_by(email: user_email)
-	
+    user = user_email.present? && User.find_by(email: user_email) || User.find_by(username: user_email)
+
     if !user
-      render json: { errors: "Email not found" }, status: 422 and return
+      render json: { errors: "Email or Username not found" }, status: 422 and return
     end
 
     if user.valid_password? user_password
