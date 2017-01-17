@@ -25,6 +25,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'pg'
 gem 'pg_search'
 
+# Logging and assets in heroku
+gem 'rails_12factor', group: :production
+
 #Api gems
 gem 'active_model_serializers'
 
