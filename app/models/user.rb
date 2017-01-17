@@ -1,4 +1,10 @@
 class User < ActiveRecord::Base
+  has_many :user_organizations, :dependent => :destroy
+  has_many :organizations, :through => :user_organizations
+
+  has_many :project_contributes, :dependent => :destroy
+  has_many :projects, :through => :project_contributes
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
