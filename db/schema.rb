@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170116120713) do
+ActiveRecord::Schema.define(version: 20170120102014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "features", force: :cascade do |t|
+    t.string   "name",                     null: false
+    t.string   "description", default: ""
+    t.integer  "project_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "features", ["project_id"], name: "index_features_on_project_id", using: :btree
 
   create_table "organizations", force: :cascade do |t|
     t.string   "name",                     null: false
@@ -47,8 +57,10 @@ ActiveRecord::Schema.define(version: 20170116120713) do
     t.string   "status",           default: "start"
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.integer  "feature_id"
   end
 
+  add_index "projects", ["feature_id"], name: "index_projects_on_feature_id", using: :btree
   add_index "projects", ["organization_id"], name: "index_projects_on_organization_id", using: :btree
 
   create_table "user_organizations", force: :cascade do |t|
@@ -86,4 +98,6 @@ ActiveRecord::Schema.define(version: 20170116120713) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "features", "projects"
+  add_foreign_key "projects", "features"
 end

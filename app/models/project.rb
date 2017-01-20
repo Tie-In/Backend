@@ -3,4 +3,6 @@ class Project < ActiveRecord::Base
 
   has_many :project_contributes, :dependent => :destroy
   has_many :users, :through => :project_contributes
+
+  has_many :features
 end
