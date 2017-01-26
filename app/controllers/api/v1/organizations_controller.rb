@@ -4,7 +4,6 @@ class Api::V1::OrganizationsController < ApplicationController
 
   def create
     organization = Organization.new(organization_params)
-    organization.owner_id = current_user.id
     if organization.save
       temp = UserOrganization.new(user: current_user, organization: organization)
       if temp.save

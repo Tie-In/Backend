@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20170123104329) do
   create_table "features", force: :cascade do |t|
     t.string   "name",                     null: false
     t.string   "description", default: ""
+    t.integer  "complexity"
     t.integer  "project_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
@@ -58,12 +59,9 @@ ActiveRecord::Schema.define(version: 20170123104329) do
   create_table "organizations", force: :cascade do |t|
     t.string   "name",                     null: false
     t.string   "description", default: ""
-    t.integer  "owner_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
-
-  add_index "organizations", ["owner_id"], name: "index_organizations_on_owner_id", using: :btree
 
   create_table "project_contributes", force: :cascade do |t|
     t.integer  "user_id"
@@ -79,20 +77,18 @@ ActiveRecord::Schema.define(version: 20170123104329) do
   create_table "projects", force: :cascade do |t|
     t.string   "name",                                      null: false
     t.string   "description",             default: ""
-    t.integer  "sprint_duaration"
+    t.integer  "sprint_duration"
     t.integer  "organization_id"
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status",                  default: "start"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
-    t.integer  "feature_id"
     t.integer  "technical_factor_id"
     t.integer  "environmental_factor_id"
   end
 
   add_index "projects", ["environmental_factor_id"], name: "index_projects_on_environmental_factor_id", using: :btree
-  add_index "projects", ["feature_id"], name: "index_projects_on_feature_id", using: :btree
   add_index "projects", ["organization_id"], name: "index_projects_on_organization_id", using: :btree
   add_index "projects", ["technical_factor_id"], name: "index_projects_on_technical_factor_id", using: :btree
 
@@ -156,8 +152,12 @@ ActiveRecord::Schema.define(version: 20170123104329) do
   add_foreign_key "effort_estimations", "projects"
   add_foreign_key "environmental_factors", "effort_estimations"
   add_foreign_key "features", "projects"
+  add_foreign_key "project_contributes", "projects"
+  add_foreign_key "project_contributes", "users"
   add_foreign_key "projects", "environmental_factors"
-  add_foreign_key "projects", "features"
+  add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "technical_factors"
   add_foreign_key "technical_factors", "effort_estimations"
+  add_foreign_key "user_organizations", "organizations"
+  add_foreign_key "user_organizations", "users"
 end
