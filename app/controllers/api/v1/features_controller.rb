@@ -4,9 +4,7 @@ class Api::V1::FeaturesController < ApplicationController
 
   def create
     project = Project.find(features_params[:project_id])
-    binding.pry
     features_params[:features].each do |feature|
-      binding.pry
       temp = Feature.new(feature)
       temp.project = project
       temp.save

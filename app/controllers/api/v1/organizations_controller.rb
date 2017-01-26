@@ -6,9 +6,12 @@ class Api::V1::OrganizationsController < ApplicationController
     organization = Organization.new(organization_params)
     if organization.save
       temp = UserOrganization.new(user: current_user, organization: organization)
-      if temp.save
-        render json: organization, status: 200
+      temp.save
+      params[:organization][:users].each do |user|
+        c = User.find(user[:id])
+        UserOrganization.create(user: c, organization: organization)
       end
+      render json: organization, include: [:projects], status: 200
     else
       render json: { errors: organization.errors }, status: 422
     end
@@ -16,6 +19,7 @@ class Api::V1::OrganizationsController < ApplicationController
 
   private
   def organization_params
-    params.require(:organization).permit(:name)
+    binding.pry
+    params.require(:organization).permit(:name, :description)
   end
 end

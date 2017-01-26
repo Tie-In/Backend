@@ -7,7 +7,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def show
-    respond_with User.find(params[:id]), except: [:auth_token]
+    respond_with User.find(params[:id]), except: [:auth_token], include: [:organizations, :projects]
   end
 
   def create
