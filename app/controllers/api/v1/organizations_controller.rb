@@ -1,6 +1,15 @@
 class Api::V1::OrganizationsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create]
+  before_action :authenticate_with_token!, only: [:show, :create]
 	respond_to :json
+
+  def show
+    org = Organization.find(params[:id])
+    if org.users.include?(current_user)
+      respond_with org, include: [:projects]
+    else
+      render json: { errors: 'Permission denied' }, status: 401
+    end
+  end
 
   def create
     organization = Organization.new(organization_params)
@@ -11,7 +20,11 @@ class Api::V1::OrganizationsController < ApplicationController
         c = User.find(user[:id])
         UserOrganization.create(user: c, organization: organization)
       end
-      render json: organization, include: [:projects], status: 200
+      # render json: organization, include: [:projects], status: 200
+      respond_to do |format|
+        format.json  { render :json => {:organization => organization.as_json(include: :projects),
+                                        :user => current_user.as_json(include: :organizations) }}
+      end
     else
       render json: { errors: organization.errors }, status: 422
     end
@@ -19,7 +32,6 @@ class Api::V1::OrganizationsController < ApplicationController
 
   private
   def organization_params
-    binding.pry
     params.require(:organization).permit(:name, :description)
   end
 end

@@ -1,11 +1,20 @@
 class Api::V1::ProjectsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create]
+  before_action :authenticate_with_token!, only: [:show, :create]
 	respond_to :json
+
+  def show
+    project = Project.find(params[:id])
+    if project.users.include?(current_user)
+      respond_with project
+    else
+      render json: { errors: 'Permission denied' }, status: 401
+    end
+  end
 
   def create
     project = Project.new(project_params)
     if project.save
-      params[:project][:contributors].each do |contributor|
+      params[:project][:users].each do |contributor|
         user = User.find(contributor[:id])
         temp = ProjectContribute.new(user: user, project: project, permission_level: :user)
         temp.save
@@ -21,7 +30,6 @@ class Api::V1::ProjectsController < ApplicationController
   private
   def project_params
     params.require(:project)
-      .permit(:name, :organization_id, :description, :sprint_duration, :start_date,
-        :end_date)
+      .permit(:name, :organization_id, :description, :sprint_duration)
   end
 end
