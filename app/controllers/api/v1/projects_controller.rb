@@ -30,6 +30,6 @@ class Api::V1::ProjectsController < ApplicationController
   private
   def project_params
     params.require(:project)
-      .permit(:name, :organization_id, :description, :sprint_duration)
+      .permit(:name, :organization_id, :description)
   end
 end
