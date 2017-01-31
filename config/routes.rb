@@ -12,7 +12,8 @@ Rails.application.routes.draw do
       resources :sessions, :only => [:create, :destroy]
       resources :organizations, :only => [:show, :create]
       resources :projects, :only => [:show, :create]
-      resources :features, :only => [:create]
+      # resources :features, :only => [:create]
+      resources :effort_estimations, :only => [:create]
     end
   end
 end

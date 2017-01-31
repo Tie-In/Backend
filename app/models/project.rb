@@ -5,4 +5,6 @@ class Project < ActiveRecord::Base
   has_many :users, :through => :project_contributes
 
   has_many :features
+
+  has_one :effort_estimation
 end
