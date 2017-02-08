@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       resources :organizations, :only => [:show, :create]
       resources :projects, :only => [:show, :create]
       # resources :features, :only => [:create]
-      resources :effort_estimations, :only => [:create]
+      resources :effort_estimations, :only => [:show, :create]
     end
   end
 end

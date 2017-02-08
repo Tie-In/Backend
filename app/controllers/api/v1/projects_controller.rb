@@ -5,7 +5,7 @@ class Api::V1::ProjectsController < ApplicationController
   def show
     project = Project.find(params[:id])
     if project.users.include?(current_user)
-      respond_with project, include: [:features]
+      respond_with project, include: [:features, :effort_estimation]
     else
       render json: { errors: 'Permission denied' }, status: 401
     end
