@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170201144254) do
+ActiveRecord::Schema.define(version: 20170217010732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,39 @@ ActiveRecord::Schema.define(version: 20170201144254) do
   add_index "projects", ["organization_id"], name: "index_projects_on_organization_id", using: :btree
   add_index "projects", ["technical_factor_id"], name: "index_projects_on_technical_factor_id", using: :btree
 
+  create_table "sprints", force: :cascade do |t|
+    t.integer  "number"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "project_id"
+    t.integer  "sprint_points"
+    t.integer  "maximum_points"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "sprints", ["project_id"], name: "index_sprints_on_project_id", using: :btree
+
+  create_table "tasks", force: :cascade do |t|
+    t.string   "name"
+    t.string   "description"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "story_point"
+    t.integer  "sprint_id"
+    t.integer  "feature_id"
+    t.decimal  "estimate_time"
+    t.decimal  "actual_time"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "assignee_id"
+    t.integer  "project_id"
+  end
+
+  add_index "tasks", ["feature_id"], name: "index_tasks_on_feature_id", using: :btree
+  add_index "tasks", ["project_id"], name: "index_tasks_on_project_id", using: :btree
+  add_index "tasks", ["sprint_id"], name: "index_tasks_on_sprint_id", using: :btree
+
   create_table "technical_factors", force: :cascade do |t|
     t.integer  "effort_estimation_id"
     t.integer  "rating_factor1"
@@ -160,6 +193,9 @@ ActiveRecord::Schema.define(version: 20170201144254) do
   add_foreign_key "projects", "environmental_factors"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "technical_factors"
+  add_foreign_key "sprints", "projects"
+  add_foreign_key "tasks", "features"
+  add_foreign_key "tasks", "sprints"
   add_foreign_key "technical_factors", "effort_estimations"
   add_foreign_key "user_organizations", "organizations"
   add_foreign_key "user_organizations", "users"

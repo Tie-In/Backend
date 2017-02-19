@@ -7,4 +7,7 @@ class Project < ActiveRecord::Base
   has_many :features
 
   has_one :effort_estimation
+
+  has_many :sprints
+  has_many :tasks
 end
