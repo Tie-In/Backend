@@ -21,6 +21,10 @@ class Api::V1::ProjectsController < ApplicationController
       end
       admin = ProjectContribute.new(user: current_user, project: project, permission_level: :admin)
       admin.save
+      status_names = ['To do', 'Doing', 'Done']
+      status_names.each do |name|
+        status = Status.create(name: name, project: project)
+      end
       render json: project, status: 200
     else
       render json: { errors: project.errors }, status: 422

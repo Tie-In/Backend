@@ -54,7 +54,7 @@ class Api::V1::UsersController < ApplicationController
     params.require(:user).require(:password_confirmation)
     params.require(:user).permit(:email, :username, :password,
       :password_confirmation, :firstname, :lastname,
-      :birth_date, :phone_number)
+      :birth_date, :phone_number, :image)
   end
 
   def user_update_params

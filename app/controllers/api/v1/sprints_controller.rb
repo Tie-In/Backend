@@ -3,27 +3,30 @@ class Api::V1::SprintsController < ApplicationController
 	respond_to :json
 
   def show
-    task = Task.find(params[:id])
-    if task.project.users.include?(current_user)
-      respond_with task
+    sprint = Sprint.find(params[:sprint_id])
+    if sprint.project.users.include?(current_user)
+      respond_to do |format|
+        format.json  { render :json => {:sprint => sprint.as_json,
+                                        :statuses => sprint.project.statuses.as_json }}
+      end
     else
       render json: { errors: 'Permission denied' }, status: 401
     end
   end
 
   def create
-    task = Task.new(task_params)
-    if task.save
-      render json: task, status: 200
+     sprint = Sprint.new(sprint_params)
+    if sprint.save
+      render json: sprint, status: 200
     else
-      render json: { errors: task.errors }, status: 422
+      render json: { errors: sprint.errors }, status: 422
     end
   end
 
   private
-  def task_params
+  def sprint_params
     params.require(:task)
-      .permit(:name, :description, :project_id, :feature_id, :story_point,
-        :assignee_id, :estimate_time, :actual_time)
+      .permit(:number, :project_id, :start_date, :end_date, :sprint_points,
+        :tasks => [:id])
   end
 end

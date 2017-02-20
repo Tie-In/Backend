@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217010732) do
+ActiveRecord::Schema.define(version: 20170220135247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,6 +108,31 @@ ActiveRecord::Schema.define(version: 20170217010732) do
 
   add_index "sprints", ["project_id"], name: "index_sprints_on_project_id", using: :btree
 
+  create_table "statuses", force: :cascade do |t|
+    t.string  "name"
+    t.integer "project_id"
+  end
+
+  add_index "statuses", ["project_id"], name: "index_statuses_on_project_id", using: :btree
+
+  create_table "tags", force: :cascade do |t|
+    t.string  "name"
+    t.integer "project_id"
+    t.string  "color_code"
+  end
+
+  add_index "tags", ["project_id"], name: "index_tags_on_project_id", using: :btree
+
+  create_table "task_tags", force: :cascade do |t|
+    t.integer  "task_id"
+    t.integer  "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "task_tags", ["tag_id"], name: "index_task_tags_on_tag_id", using: :btree
+  add_index "task_tags", ["task_id"], name: "index_task_tags_on_task_id", using: :btree
+
   create_table "tasks", force: :cascade do |t|
     t.string   "name"
     t.string   "description"
@@ -179,6 +204,7 @@ ActiveRecord::Schema.define(version: 20170217010732) do
     t.string   "lastname",                            null: false
     t.date     "birth_date"
     t.string   "phone_number",                        null: false
+    t.string   "image"
   end
 
   add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true, using: :btree
@@ -194,6 +220,10 @@ ActiveRecord::Schema.define(version: 20170217010732) do
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "technical_factors"
   add_foreign_key "sprints", "projects"
+  add_foreign_key "statuses", "projects"
+  add_foreign_key "tags", "projects"
+  add_foreign_key "task_tags", "tags"
+  add_foreign_key "task_tags", "tasks"
   add_foreign_key "tasks", "features"
   add_foreign_key "tasks", "sprints"
   add_foreign_key "technical_factors", "effort_estimations"
