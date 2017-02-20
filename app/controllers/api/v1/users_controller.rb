@@ -8,7 +8,7 @@ class Api::V1::UsersController < ApplicationController
     else
       @users = User.all
     end
-    render json: @users, only: [:id, :username, :email]
+    render json: @users, only: [:id, :username, :email, :image]
   end
 
   def profile_detail
