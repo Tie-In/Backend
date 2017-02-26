@@ -15,7 +15,7 @@ class Api::V1::SprintsController < ApplicationController
   end
 
   def create
-     sprint = Sprint.new(sprint_params)
+    sprint = Sprint.new(sprint_params)
     if sprint.save
       render json: sprint, status: 200
     else

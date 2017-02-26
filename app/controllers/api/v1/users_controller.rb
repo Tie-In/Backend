@@ -1,18 +1,17 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :authenticate_with_token!, only: [:update, :destroy, :profile_detail]
+  before_action :authenticate_with_token!, only: [:index, :update, :destroy]
 	respond_to :json
 
   def index
-    unless params[:organization].nil?
-      @users = Organization.find(params[:organization]).users
+    if !params[:organization].nil?
+      users = Organization.find(params[:organization]).users
+    elsif !params[:project].nil?
+      users = Project.find(params[:project]).users
     else
-      @users = User.all
+      users = User.all
     end
-    render json: @users, only: [:id, :username, :email, :image]
-  end
-
-  def profile_detail
-    respond_with current_user, except: [:auth_token, :created_at, :updated_at]
+    users = users.reject { |a| a.id == current_user.id }
+    render json: users, only: [:id, :username, :email, :image]
   end
 
   def show

@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 20170220135247) do
   create_table "tags", force: :cascade do |t|
     t.string  "name"
     t.integer "project_id"
-    t.string  "color_code"
+    t.string  "color"
   end
 
   add_index "tags", ["project_id"], name: "index_tags_on_project_id", using: :btree

@@ -6,5 +6,5 @@ class Task < ActiveRecord::Base
   belongs_to :statuses
 
   has_many :task_tags, :dependent => :destroy
-  has_many :tasks, :through => :task_tags
+  has_many :tags, :through => :task_tags
 end

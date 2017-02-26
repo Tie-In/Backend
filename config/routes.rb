@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       # resources :features, :only => [:create]
       resources :effort_estimations, :only => [:show, :create]
       resources :tasks, :only => [:create]
+      resources :tags, :only => [:index, :create]
     end
   end
 end
