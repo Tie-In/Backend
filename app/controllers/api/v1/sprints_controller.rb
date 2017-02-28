@@ -3,11 +3,12 @@ class Api::V1::SprintsController < ApplicationController
 	respond_to :json
 
   def show
-    sprint = Sprint.find(params[:sprint_id])
+    sprint = Sprint.find(params[:id])
     if sprint.project.users.include?(current_user)
+      statuses = sprint.project.statuses
       respond_to do |format|
-        format.json  { render :json => {:sprint => sprint.as_json,
-                                        :statuses => sprint.project.statuses.as_json }}
+        format.json { render :json => { :sprint => sprint.as_json,
+                                        :statuses => statuses.as_json(include: { tasks: { include: :tags }}) }}
       end
     else
       render json: { errors: 'Permission denied' }, status: 401

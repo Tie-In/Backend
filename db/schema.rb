@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170220135247) do
+ActiveRecord::Schema.define(version: 20170227110427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20170220135247) do
   create_table "statuses", force: :cascade do |t|
     t.string  "name"
     t.integer "project_id"
+    t.integer "column_index"
   end
 
   add_index "statuses", ["project_id"], name: "index_statuses_on_project_id", using: :btree
@@ -147,11 +148,14 @@ ActiveRecord::Schema.define(version: 20170220135247) do
     t.datetime "updated_at",    null: false
     t.integer  "assignee_id"
     t.integer  "project_id"
+    t.integer  "status_id"
+    t.integer  "row_index"
   end
 
   add_index "tasks", ["feature_id"], name: "index_tasks_on_feature_id", using: :btree
   add_index "tasks", ["project_id"], name: "index_tasks_on_project_id", using: :btree
   add_index "tasks", ["sprint_id"], name: "index_tasks_on_sprint_id", using: :btree
+  add_index "tasks", ["status_id"], name: "index_tasks_on_status_id", using: :btree
 
   create_table "technical_factors", force: :cascade do |t|
     t.integer  "effort_estimation_id"

@@ -12,10 +12,11 @@ Rails.application.routes.draw do
       resources :sessions, :only => [:create, :destroy]
       resources :organizations, :only => [:show, :create]
       resources :projects, :only => [:show, :create]
-      # resources :features, :only => [:create]
+      resources :sprints, :only => [:show]
       resources :effort_estimations, :only => [:show, :create]
-      resources :tasks, :only => [:create]
+      resources :tasks, :only => [:create, :update]
       resources :tags, :only => [:index, :create]
+      resources :statuses, :only => [:create, :update]
     end
   end
 end
