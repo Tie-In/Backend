@@ -4,6 +4,7 @@ class Api::V1::StatusesController < ApplicationController
 
   def create
      status = Status.new(create_params)
+     status.column_index = status.project.statuses.length
     if status.save
       render json: status, include: { tasks: { include: :tags }}, status: 200
     else
