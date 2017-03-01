@@ -8,7 +8,7 @@ class Api::V1::SprintsController < ApplicationController
       statuses = sprint.project.statuses
       respond_to do |format|
         format.json { render :json => { :sprint => sprint.as_json,
-                                        :statuses => statuses.as_json(include: { tasks: { include: :tags }}) }}
+                                        :statuses => statuses.as_json(include: { tasks: { include: [:tags, :feature] }}) }}
       end
     else
       render json: { errors: 'Permission denied' }, status: 401

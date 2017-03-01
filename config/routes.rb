@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       resources :effort_estimations, :only => [:show, :create]
       resources :tasks, :only => [:create, :update]
       resources :tags, :only => [:index, :create]
-      resources :statuses, :only => [:create, :update]
+      resources :statuses
     end
   end
 end
