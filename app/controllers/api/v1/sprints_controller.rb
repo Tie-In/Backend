@@ -2,6 +2,26 @@ class Api::V1::SprintsController < ApplicationController
   before_action :authenticate_with_token!, only: [:create, :show]
 	respond_to :json
 
+  def create
+    sprint = Sprint.new(sprint_params)
+    sprint.number = sprint.project.sprints.size + 1
+    if sprint.save
+      params[:tasks].each do |task|
+        temp = Task.find(task[:id])
+        # check not task not in sprint
+        if task.sprint.nil?
+          temp.sprint = sprint
+          temp.story_point = task[:story_point]
+          temp.status = sprint.project.statuses.first
+          temp.save
+        end
+      end
+      render json: sprint, status: 200
+    else
+      render json: { errors: sprint.errors }, status: 422
+    end
+  end
+
   def show
     sprint = Sprint.find(params[:id])
     if sprint.project.users.include?(current_user)
@@ -15,19 +35,8 @@ class Api::V1::SprintsController < ApplicationController
     end
   end
 
-  def create
-    sprint = Sprint.new(sprint_params)
-    if sprint.save
-      render json: sprint, status: 200
-    else
-      render json: { errors: sprint.errors }, status: 422
-    end
-  end
-
   private
   def sprint_params
-    params.require(:task)
-      .permit(:number, :project_id, :start_date, :end_date, :sprint_points,
-        :tasks => [:id])
+    params.permit(:number, :project_id, :start_date, :end_date, :sprint_points)
   end
 end

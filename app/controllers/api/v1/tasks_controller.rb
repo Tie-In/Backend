@@ -1,6 +1,16 @@
 class Api::V1::TasksController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create, :show, :update]
+  before_action :authenticate_with_token!, only: [:index, :create, :show, :update]
 	respond_to :json
+
+  def index
+    project = Project.find(params[:project])
+    if params[:sprint] == "backlog"
+      backlog_tasks = Task.where(project: project, sprint: nil)
+      render json: backlog_tasks, status: 200
+    else
+      render json: project.tasks, status: 200
+    end
+  end
 
   def show
     task = Task.find(params[:id])
