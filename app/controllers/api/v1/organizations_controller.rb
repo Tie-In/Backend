@@ -13,14 +13,15 @@ class Api::V1::OrganizationsController < ApplicationController
 
   def create
     organization = Organization.new(organization_params)
-    if organization.save
+    if organization.valid?
       temp = UserOrganization.new(user: current_user, organization: organization)
       temp.save
-      params[:organization][:users].each do |user|
-        c = User.find(user[:id])
-        UserOrganization.create(user: c, organization: organization)
+      unless params[:organization][:users].nil?
+        params[:organization][:users].each do |user|
+          c = User.find(user[:id])
+          UserOrganization.create(user: c, organization: organization)
+        end
       end
-      # render json: organization, include: [:projects], status: 200
       respond_to do |format|
         format.json  { render :json => {:organization => organization.as_json(include: :projects),
                                         :user => current_user.as_json(include: :organizations) }}

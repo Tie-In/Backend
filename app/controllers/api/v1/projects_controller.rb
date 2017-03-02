@@ -14,10 +14,12 @@ class Api::V1::ProjectsController < ApplicationController
   def create
     project = Project.new(project_params)
     if project.save
-      params[:project][:users].each do |contributor|
-        user = User.find(contributor[:id])
-        temp = ProjectContribute.new(user: user, project: project, permission_level: :user)
-        temp.save
+      unless params[:project][:users].nil?
+        params[:project][:users].each do |contributor|
+          user = User.find(contributor[:id])
+          temp = ProjectContribute.new(user: user, project: project, permission_level: :user)
+          temp.save
+        end
       end
       admin = ProjectContribute.new(user: current_user, project: project, permission_level: :admin)
       admin.save
