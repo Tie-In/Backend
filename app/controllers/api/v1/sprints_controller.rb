@@ -8,7 +8,7 @@ class Api::V1::SprintsController < ApplicationController
     if sprint.save
       params[:tasks].each do |task|
         temp = Task.find(task[:id])
-        # check not task not in sprint
+        # check task not in any sprint
         if task.sprint.nil?
           temp.sprint = sprint
           temp.story_point = task[:story_point]

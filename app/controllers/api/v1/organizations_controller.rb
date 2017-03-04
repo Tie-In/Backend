@@ -13,19 +13,22 @@ class Api::V1::OrganizationsController < ApplicationController
 
   def create
     organization = Organization.new(organization_params)
-    if organization.valid?
+    if organization.save
       temp = UserOrganization.new(user: current_user, organization: organization)
-      temp.save
-      unless params[:organization][:users].nil?
-        params[:organization][:users].each do |user|
-          c = User.find(user[:id])
-          UserOrganization.create(user: c, organization: organization)
+      if temp.save
+        unless params[:organization][:users].nil?
+          params[:organization][:users].each do |user|
+            c = User.find(user[:id])
+            UserOrganization.create(user: c, organization: organization)
+          end
         end
-      end
-      respond_to do |format|
-        format.json  { render :json => {:organization => organization.as_json(include: :projects),
-                                        :user => current_user.as_json(include: :organizations) }}
-      end
+        respond_to do |format|
+          format.json  { render :json => {:organization => organization.as_json(include: :projects),
+                                          :user => current_user.as_json(include: :organizations) }}
+        end
+      else
+        organization.destroy
+        render json: { errors: "Owner cannot be create the organization"}, status: 422
     else
       render json: { errors: organization.errors }, status: 422
     end
