@@ -29,6 +29,7 @@ class Api::V1::OrganizationsController < ApplicationController
       else
         organization.destroy
         render json: { errors: "Owner cannot be create the organization"}, status: 422
+      end
     else
       render json: { errors: organization.errors }, status: 422
     end
