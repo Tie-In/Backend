@@ -22,7 +22,7 @@ class Api::V1::UsersController < ApplicationController
     ActiveRecord::Base.transaction do
       user = User.new(user_params)
       if user.save
-        render json: user, include: [:organizations, :projects], status: 200, location: [:api, user]
+        render json: user, include: [:organizations, :projects], status: 200
       else
         render json: { errors: user.errors }, status: 422
       end
@@ -31,15 +31,10 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     user = current_user
-    user_password = user_update_params[:password]
-    if user.valid_password? user_password
-      if user.update(user_params)
-        render json:  user.to_json(:except => :auth_token), status: 200, location: [:api, user]
-      else
-        render json: { errors: user.errors }, status: 422
-      end
+    if user.update(user_update_params)
+      render json: user, include: [:organizations, :projects], status: 200
     else
-      render json: { errors: 'Wrong password' }, status: 422
+      render json: { errors: user.errors }, status: 422
     end
   end
 
@@ -57,7 +52,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_update_params
-    params.require(:user).require(:password)
-    params.require(:user).permit(:email, :username, :password, :password_confirmation)
+    params.permit(:email, :username, :firstname, :lastname,
+      :birth_date, :phone_number)
   end
 end
