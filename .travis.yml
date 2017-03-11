@@ -10,3 +10,7 @@ before_script:
   - cp config/database.travis.yml config/database.yml
   - mysql -e 'create database mydb_test'
 bundler_args: --binstubs=./bundler_stubs
+notifications:
+  email:
+    on_success: never # default: change
+    on_failure: always # default: always
