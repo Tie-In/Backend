@@ -59,9 +59,13 @@ group :development, :test do
 
   gem "rspec-rails"
   gem "factory_girl_rails"
-  gem "ffaker"
+  gem 'faker', '~> 1.4.3'
   gem "shoulda-matchers"
 
   gem 'pry-rails', '0.3.4' # a better console
   gem 'pry-byebug' , '3.1.0'
+end
+
+group :test do
+  gem 'database_cleaner'
 end

@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :authenticate_with_token!, only: [:index, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:update, :destroy]
 	respond_to :json
 
   def index
@@ -10,7 +10,10 @@ class Api::V1::UsersController < ApplicationController
     else
       users = User.all
     end
-    users = users.reject { |a| a.id == current_user.id }
+    # remove current user if have auth_token header
+    unless request.headers['Authorization'].nil?
+      users = users.reject { |a| a.id == current_user.id }
+    end
     render json: users, only: [:id, :username, :email, :image]
   end
 
