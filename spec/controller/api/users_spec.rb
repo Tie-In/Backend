@@ -9,8 +9,8 @@ describe Api::V1::UsersController, type: :controller do
 
     it 'all users' do
       get :index
-      users = JSON.parse(response.body)
 
+      users = JSON.parse(response.body)
       # test for the 200 status-code
       expect(response).to be_success
 
@@ -72,19 +72,22 @@ describe Api::V1::UsersController, type: :controller do
     end
   end
 
-  # context 'PUT #update' do
-  #   before(:all) do
-  #     FactoryGirl.create_list(:user, 5)
-  #   end
-  #
-  #   it 'all users' do
-  #     get :index
-  #     users = JSON.parse(response.body)
-  #
-  #     # test for the 200 status-code
-  #     expect(response).to be_success
-  #
-  #     expect(users.length).to eq(5)
-  #   end
-  # end
+  context 'PUT #update' do
+    before(:all) do
+      @user = FactoryGirl.create(:login_user)
+    end
+
+    it 'success' do
+      update = {
+        firstname: 'Jane'
+      }
+      update_json = update.as_json
+      allow(controller).to receive(:current_user).and_return(@user)
+      put :update, { id: @user.id, user: update_json }
+
+      user = JSON.parse(response.body)
+      expect(response).to be_success
+      expect(user['firstname']).to eq('Jane')
+    end
+  end
 end
