@@ -23,7 +23,6 @@ class Api::V1::TasksController < ApplicationController
 
   def create
     task = Task.new(task_params)
-    task.status = task.project.statuses.where(column_index: 0).first
     if task.save
       unless params[:tags].nil?
         params[:tags].each do |tag|
@@ -66,7 +65,7 @@ class Api::V1::TasksController < ApplicationController
         all_links.destroy_all
         unless params[:tags].nil?
           params[:tags].each do |tag|
-            tag = Tag.find(JSON.parse(tag)["id"])
+            tag = Tag.find(tag[:id])
             temp = TaskTag.new(task: current_task, tag: tag)
             temp.save
           end
