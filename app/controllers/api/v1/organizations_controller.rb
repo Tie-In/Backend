@@ -21,6 +21,7 @@ class Api::V1::OrganizationsController < ApplicationController
   end
 
   def create
+    binding.pry
     organization = Organization.new(organization_params)
     if organization.save
       temp = UserOrganization.new(user: current_user, organization: organization, permission_level: :owner)
@@ -31,10 +32,8 @@ class Api::V1::OrganizationsController < ApplicationController
             UserOrganization.create(user: c, organization: organization, permission_level: :user)
           end
         end
-        respond_to do |format|
-          format.json  { render :json => {:organization => organization.as_json(include: :projects),
-                                          :user => current_user.as_json(include: :organizations) }}
-        end
+        render :json => {:organization => organization.as_json(include: :projects),
+                          :user => current_user.as_json(include: :organizations) }, status: 201
       else
         organization.destroy
         render json: { errors: "Owner cannot be create the organization"}, status: 422

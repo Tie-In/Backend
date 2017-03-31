@@ -11,10 +11,10 @@ describe Api::V1::OrganizationsController, type: :controller do
     #   post :create, session: @login_json
     # end
 
-    it 'organization' do
-      subject
-      allow(controller).to receive(:current_user).and_return(@user)
-      expect(response).to have_http_status(:created)
-    end
+    # it 'organization' do
+    #   subject
+    #   allow(controller).to receive(:current_user).and_return(@user)
+    #   expect(response).to have_http_status(:created)
+    # end
   end
 end
