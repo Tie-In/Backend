@@ -21,7 +21,6 @@ class Api::V1::OrganizationsController < ApplicationController
   end
 
   def create
-    binding.pry
     organization = Organization.new(organization_params)
     if organization.save
       temp = UserOrganization.new(user: current_user, organization: organization, permission_level: :owner)
