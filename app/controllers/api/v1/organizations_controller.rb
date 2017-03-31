@@ -44,6 +44,7 @@ class Api::V1::OrganizationsController < ApplicationController
 
   private
   def organization_params
+    binding.pry
     params.require(:organization).permit(:name, :description)
   end
 

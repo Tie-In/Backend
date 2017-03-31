@@ -16,6 +16,7 @@ describe Api::V1::OrganizationsController, type: :controller do
     end
 
     it 'success organization with no collaborator' do
+      subject
       allow(controller).to receive(:current_user).and_return(@user)
       expect(response).to have_http_status(:created)
     end

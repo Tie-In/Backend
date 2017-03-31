@@ -23,7 +23,6 @@ class Api::V1::UserOrganizationsController < ApplicationController
   def create
     uo = UserOrganization.new(create_params)
     uo.permission_level = "user"
-    binding.pry
     if uo.save
       render json: uo, status: 201
     else 
