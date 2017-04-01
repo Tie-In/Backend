@@ -1,26 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::OrganizationsController, type: :controller do
-  context 'GET #show' do
-     before(:each) do
-      @user = FactoryGirl.create(:user)
-      @organization = {
-        name: 'Tiein',
-        description: 'Test create'
-      }
-    end
-    
-    it 'must be collaborators in the organization' do
-      get :index
-
-      users = JSON.parse(response.body)
-      # test for the 200 status-code
-      expect(response).to be_success
-
-      expect(users.length).to eq(5)
-    end
-  end
-
   context 'POST #create' do
     before(:each) do
       @user = FactoryGirl.create(:user)
