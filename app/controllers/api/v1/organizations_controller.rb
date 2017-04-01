@@ -35,7 +35,7 @@ class Api::V1::OrganizationsController < ApplicationController
                           :user => current_user.as_json(include: :organizations) }, status: 201
       else
         organization.destroy
-        render json: { errors: "Owner cannot be create the organization"}, status: 422
+        render json: { errors: "Owner cannot create the organization"}, status: 422
       end
     else
       render json: { errors: organization.errors }, status: 422
