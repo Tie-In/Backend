@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170329115458) do
+ActiveRecord::Schema.define(version: 20170402040307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,15 @@ ActiveRecord::Schema.define(version: 20170329115458) do
   add_index "projects", ["environmental_factor_id"], name: "index_projects_on_environmental_factor_id", using: :btree
   add_index "projects", ["organization_id"], name: "index_projects_on_organization_id", using: :btree
   add_index "projects", ["technical_factor_id"], name: "index_projects_on_technical_factor_id", using: :btree
+
+  create_table "retrospectives", force: :cascade do |t|
+    t.integer "number"
+    t.integer "sprint_id"
+    t.integer "project_id"
+  end
+
+  add_index "retrospectives", ["project_id"], name: "index_retrospectives_on_project_id", using: :btree
+  add_index "retrospectives", ["sprint_id"], name: "index_retrospectives_on_sprint_id", using: :btree
 
   create_table "sprints", force: :cascade do |t|
     t.integer  "number"
@@ -217,6 +226,31 @@ ActiveRecord::Schema.define(version: 20170329115458) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  create_table "viewpoint_categories", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "retrospective_id"
+    t.string   "color"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "viewpoint_categories", ["retrospective_id"], name: "index_viewpoint_categories_on_retrospective_id", using: :btree
+
+  create_table "viewpoints", force: :cascade do |t|
+    t.string   "comment"
+    t.integer  "retrospective_id"
+    t.integer  "user_id"
+    t.integer  "type"
+    t.boolean  "selected"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "viewpoint_categories_id"
+  end
+
+  add_index "viewpoints", ["retrospective_id"], name: "index_viewpoints_on_retrospective_id", using: :btree
+  add_index "viewpoints", ["user_id"], name: "index_viewpoints_on_user_id", using: :btree
+  add_index "viewpoints", ["viewpoint_categories_id"], name: "index_viewpoints_on_viewpoint_categories_id", using: :btree
+
   add_foreign_key "effort_estimations", "projects"
   add_foreign_key "environmental_factors", "effort_estimations"
   add_foreign_key "features", "projects"
@@ -225,6 +259,8 @@ ActiveRecord::Schema.define(version: 20170329115458) do
   add_foreign_key "projects", "environmental_factors"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "technical_factors"
+  add_foreign_key "retrospectives", "projects"
+  add_foreign_key "retrospectives", "sprints"
   add_foreign_key "sprints", "projects"
   add_foreign_key "statuses", "projects"
   add_foreign_key "tags", "projects"
@@ -235,4 +271,7 @@ ActiveRecord::Schema.define(version: 20170329115458) do
   add_foreign_key "technical_factors", "effort_estimations"
   add_foreign_key "user_organizations", "organizations"
   add_foreign_key "user_organizations", "users"
+  add_foreign_key "viewpoint_categories", "retrospectives"
+  add_foreign_key "viewpoints", "retrospectives"
+  add_foreign_key "viewpoints", "users"
 end

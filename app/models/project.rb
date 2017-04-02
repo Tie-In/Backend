@@ -13,5 +13,7 @@ class Project < ActiveRecord::Base
   has_many :statuses,  dependent: :destroy
   has_many :tags
 
+  has_many :retrospective
+
   validates :name, :presence => true
 end
