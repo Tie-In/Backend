@@ -6,6 +6,9 @@ class Api::V1::SprintsController < ApplicationController
     sprint = Sprint.new(sprint_params)
     sprint.number = sprint.project.sprints.size + 1
     if sprint.save
+      project = sprint.project
+      project.current_sprint_id = sprint.id
+      project.save
       params[:tasks].each do |task|
         temp = Task.find(task[:id])
         # check task not in any sprint
