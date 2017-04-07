@@ -3,7 +3,7 @@ class Api::V1::SprintsController < ApplicationController
 	respond_to :json
 
   def create
-    sprint = Sprint.new(sprint_params)
+    sprint = Sprint.new(create_params)
     sprint.number = sprint.project.sprints.size + 1
     if sprint.save
       project = sprint.project
@@ -39,7 +39,7 @@ class Api::V1::SprintsController < ApplicationController
   end
 
   private
-  def sprint_params
+  def create_params
     params.permit(:number, :project_id, :start_date, :end_date, :sprint_points)
   end
 end

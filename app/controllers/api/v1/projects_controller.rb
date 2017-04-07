@@ -22,7 +22,7 @@ class Api::V1::ProjectsController < ApplicationController
 
 
   def create
-    project = Project.new(project_params)
+    project = Project.new(create_params)
     unless project.organization.projects.pluck(:name).include?(project.name)
       if project.save
         unless params[:project][:users].nil?
@@ -48,7 +48,7 @@ class Api::V1::ProjectsController < ApplicationController
   end
 
   private
-  def project_params
+  def create_params
     params.require(:project)
       .permit(:name, :organization_id, :description, :sprint_duration)
   end

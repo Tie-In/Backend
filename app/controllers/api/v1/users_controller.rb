@@ -23,7 +23,7 @@ class Api::V1::UsersController < ApplicationController
 
   def create
     ActiveRecord::Base.transaction do
-      user = User.new(user_params)
+      user = User.new(create_params)
       if user.save
         render json: user, include: [:organizations, :projects], status: 201
       else
@@ -34,7 +34,7 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     user = current_user
-    if user.update(user_update_params)
+    if user.update(update_params)
       render json: user, include: [:organizations, :projects], status: 200
     else
       render json: { errors: user.errors }, status: 422
@@ -47,14 +47,14 @@ class Api::V1::UsersController < ApplicationController
   end
 
   private
-  def user_params
+  def create_params
     params.require(:user).require(:password_confirmation)
     params.require(:user).permit(:email, :username, :password,
       :password_confirmation, :firstname, :lastname,
       :birth_date, :phone_number, :image)
   end
 
-  def user_update_params
+  def update_params
     params.require(:user).permit(:email, :username, :firstname, :lastname,
       :birth_date, :phone_number)
   end
