@@ -38,7 +38,7 @@ class Api::V1::ProjectsController < ApplicationController
         status_names.each_with_index do |name, i|
           status = Status.create(name: name, project: project, column_index: i)
         end
-        render json: project, status: 200
+        render json: project, status: 201
       else
         render json: { errors: project.errors }, status: 422
       end
