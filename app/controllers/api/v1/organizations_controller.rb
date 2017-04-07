@@ -21,7 +21,7 @@ class Api::V1::OrganizationsController < ApplicationController
   end
 
   def create
-    organization = Organization.new(organization_params)
+    organization = Organization.new(create_params)
     if organization.save
       temp = UserOrganization.new(user: current_user, organization: organization, permission_level: :owner)
       if temp.save
@@ -43,7 +43,7 @@ class Api::V1::OrganizationsController < ApplicationController
   end
 
   private
-  def organization_params
+  def create_params
     params.require(:organization).permit(:name, :description)
   end
 

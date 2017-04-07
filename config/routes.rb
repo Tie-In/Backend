@@ -10,9 +10,10 @@ Rails.application.routes.draw do
       # We are going to list our resources here
       resources :users
       resources :user_organizations, :only => [:create, :update, :destroy]
+      resources :project_contributes, :only => [:create, :update, :destroy]
       resources :sessions, :only => [:create, :destroy]
       resources :organizations
-      resources :projects, :only => [:show, :create]
+      resources :projects
       resources :sprints, :only => [:show, :create]
       resources :effort_estimations, :only => [:show, :create]
       resources :tasks, :only => [:index, :create, :update]

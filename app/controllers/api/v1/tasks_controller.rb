@@ -22,7 +22,7 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def create
-    task = Task.new(task_params)
+    task = Task.new(create_params)
     if task.save
       unless params[:tags].nil?
         params[:tags].each do |tag|
@@ -84,7 +84,7 @@ class Api::V1::TasksController < ApplicationController
   end
 
   private
-  def task_params
+  def create_params
     params.permit(:name, :description, :project_id, :feature_id, :story_point,
         :assignee_id, :estimate_time, :actual_time)
   end

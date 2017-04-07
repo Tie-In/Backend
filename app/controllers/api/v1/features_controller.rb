@@ -4,9 +4,9 @@ class Api::V1::FeaturesController < ApplicationController
 
   # planning features
   def create
-    project = Project.find(features_params[:project_id])
+    project = Project.find(create_params[:project_id])
     project.features.destroy_all
-    features_params[:features].each do |feature|
+    create_params[:features].each do |feature|
       temp = Feature.new(feature)
       temp.project = project
       temp.save
@@ -15,7 +15,7 @@ class Api::V1::FeaturesController < ApplicationController
   end
 
   private
-  def features_params
+  def create_params
     params.require(:features).permit(:project_id, :features => [:name, :complexity])
   end
 end

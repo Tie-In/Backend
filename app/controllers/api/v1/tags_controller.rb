@@ -10,7 +10,7 @@ class Api::V1::TagsController < ApplicationController
   end
 
   def create
-     tag = Tag.new(tag_params)
+     tag = Tag.new(create_params)
     if tag.save
       render json: tag, status: 200
     else
@@ -19,7 +19,7 @@ class Api::V1::TagsController < ApplicationController
   end
 
   private
-  def tag_params
+  def create_params
     params.permit(:name, :color, :project_id)
   end
 end
