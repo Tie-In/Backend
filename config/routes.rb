@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       resources :tasks, :only => [:index, :create, :update]
       resources :tags, :only => [:index, :create]
       resources :statuses
+      resources :retrospectives, :only => [:create, :update]
     end
   end
 end

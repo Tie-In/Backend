@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170402040307) do
+ActiveRecord::Schema.define(version: 20170408055154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,9 +97,12 @@ ActiveRecord::Schema.define(version: 20170402040307) do
   add_index "projects", ["technical_factor_id"], name: "index_projects_on_technical_factor_id", using: :btree
 
   create_table "retrospectives", force: :cascade do |t|
-    t.integer "number"
-    t.integer "sprint_id"
-    t.integer "project_id"
+    t.integer  "number"
+    t.integer  "sprint_id"
+    t.integer  "project_id"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "retrospectives", ["project_id"], name: "index_retrospectives_on_project_id", using: :btree
