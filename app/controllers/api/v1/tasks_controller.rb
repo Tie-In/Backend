@@ -56,7 +56,9 @@ class Api::V1::TasksController < ApplicationController
         tasks.insert(new_index.to_i, current_task)
       end
       tasks.each_with_index do |task, i|
-        task.update(row_index: i)
+        unless task.nil?
+          task.update(row_index: i)
+        end
       end
       render json: current_task, include: [:tags], status: 200
     else
