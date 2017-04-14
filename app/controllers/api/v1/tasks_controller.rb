@@ -7,6 +7,9 @@ class Api::V1::TasksController < ApplicationController
     if params[:sprint] == "backlog"
       backlog_tasks = Task.where(project: project, sprint: nil)
       render json: backlog_tasks, include: [:feature], status: 200
+    elsif params[:sprint]
+      sprint_tasks = Task.where(project: project, sprint: params[:sprint])
+      render json: sprint_tasks, include: [:feature], status: 200
     else
       render json: project.tasks, status: 200
     end
@@ -56,9 +59,7 @@ class Api::V1::TasksController < ApplicationController
         tasks.insert(new_index.to_i, current_task)
       end
       tasks.each_with_index do |task, i|
-        unless task.nil?
-          task.update(row_index: i)
-        end
+        task.update(row_index: i)
       end
       render json: current_task, include: [:tags], status: 200
     else

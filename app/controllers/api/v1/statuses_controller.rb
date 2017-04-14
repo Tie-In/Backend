@@ -6,7 +6,7 @@ class Api::V1::StatusesController < ApplicationController
      status = Status.new(create_params)
      status.column_index = status.project.statuses.length
     if status.save
-      render json: status, include: { tasks: { include: :tags }}, status: 200
+      render json: status, include: { tasks: { include: :tags }}, status: 201
     else
       render json: { errors: status.errors }, status: 422
     end
@@ -14,35 +14,37 @@ class Api::V1::StatusesController < ApplicationController
 
   def update
     current_status = Status.find(params[:id])
-    unless params[:column_index].nil?
-      new_index = params[:column_index]
+    unless update_params[:column_index].nil?
+      new_index = update_params[:column_index]
       statuses = Project.find(current_status.project_id).statuses
       unless statuses.empty?
         statuses = statuses.sort_by { |t| t["column_index"]}
         statuses.delete_at(current_status.column_index)
-        statuses.insert(params[:column_index].to_i, current_status)
+        statuses.insert(update_params[:column_index].to_i, current_status)
       end
       statuses.each_with_index do |status, i|
         status.update(column_index: i)
       end
-      render json: current_status, include: { tasks: { include: :tags }}, status: 200
+    end
+    if current_status.update(name: update_params[:name])
+      statuses = current_status.project.statuses
+      # render all status in project (bad way)
+      render json: status, include: { tasks: { include: :tags }}, status: 200
     else
-      if current_status.update(update_params)
-        statuses = current_status.project.statuses
-        # render all status in project (bad way)
-        render json: statuses, include: { tasks: { include: [:tags, :feature] }}, status: 200
-      else
-        render json: { errors: current_status.errors }, status: 422
-      end
+      render json: { errors: current_status.errors }, status: 422
     end
   end
 
   def destroy
     status = Status.find(params[:id]).destroy
-    project = status.project
+    first_status = status.project.statuses.first
+    temp_index = first_status.tasks.length
+    status.tasks.each_with_index do |task, i|
+      task.update(status: first_status, row_index: temp_index + i)
+    end
     if status.destroy
       # render all status in project (bad way)
-      render json: project.statuses, include: { tasks: { include: [:tags, :feature] }}, status: 200
+      render json: status, include: { tasks: { include: :tags }}, status: 200
     else
       render json: { errors: status.errors }, status: 422
     end
@@ -52,11 +54,11 @@ class Api::V1::StatusesController < ApplicationController
 
   private
   def create_params
-    params.permit(:name, :project_id, :column_index)
+    params.require(:status).permit(:name, :project_id, :column_index)
   end
 
   def update_params
-    params.permit(:name)
+    params.require(:status).permit(:name, :column_index)
   end
 
 end

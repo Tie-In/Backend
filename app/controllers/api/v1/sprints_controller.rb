@@ -19,7 +19,7 @@ class Api::V1::SprintsController < ApplicationController
           temp.save
         end
       end
-      render json: sprint, status: 200
+      render json: sprint, status: 201
     else
       render json: { errors: sprint.errors }, status: 422
     end
@@ -38,8 +38,32 @@ class Api::V1::SprintsController < ApplicationController
     end
   end
 
+  def update
+    sprint = Sprint.find(params[:id])
+    if sprint.update(update_params)
+      if sprint.is_ended
+        sprint.update(end_date: Date.today)
+        project = Project.find(sprint.project_id)
+        project.update(current_sprint_id: nil)
+        done_status = project.statuses.find_by(name: "Done").id
+        undone_tasks = sprint.tasks.where(project: sprint.project_id).where.not(status_id: done_status)
+        undone_tasks.each do |task|
+          task.update(sprint: nil, status: nil)
+        end
+        
+      end
+      render json: sprint, status: 200
+    else
+      render json: { errors: sprint.errors }, status: 422
+    end
+  end
+
   private
   def create_params
-    params.permit(:number, :project_id, :start_date, :end_date, :sprint_points)
+    params.permit(:number, :project_id, :start_date, :sprint_points)
+  end
+
+  def update_params
+    params.require(:sprint).permit(:is_ended)
   end
 end

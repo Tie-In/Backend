@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170408055154) do
+ActiveRecord::Schema.define(version: 20170414060659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,8 +115,9 @@ ActiveRecord::Schema.define(version: 20170408055154) do
     t.integer  "project_id"
     t.integer  "sprint_points"
     t.integer  "maximum_points"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.boolean  "is_ended",       default: false
   end
 
   add_index "sprints", ["project_id"], name: "index_sprints_on_project_id", using: :btree
@@ -157,12 +158,13 @@ ActiveRecord::Schema.define(version: 20170408055154) do
     t.integer  "feature_id"
     t.decimal  "estimate_time"
     t.decimal  "actual_time"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.integer  "assignee_id"
     t.integer  "project_id"
     t.integer  "status_id"
     t.integer  "row_index"
+    t.boolean  "is_done",       default: false
   end
 
   add_index "tasks", ["feature_id"], name: "index_tasks_on_feature_id", using: :btree
