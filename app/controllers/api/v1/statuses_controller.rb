@@ -28,7 +28,6 @@ class Api::V1::StatusesController < ApplicationController
     end
     if current_status.update(name: update_params[:name])
       statuses = current_status.project.statuses
-      # render all status in project (bad way)
       render json: status, include: { tasks: { include: :tags }}, status: 200
     else
       render json: { errors: current_status.errors }, status: 422
@@ -43,7 +42,6 @@ class Api::V1::StatusesController < ApplicationController
       task.update(status: first_status, row_index: temp_index + i)
     end
     if status.destroy
-      # render all status in project (bad way)
       render json: status, include: { tasks: { include: :tags }}, status: 200
     else
       render json: { errors: status.errors }, status: 422

@@ -42,13 +42,17 @@ class Api::V1::TasksController < ApplicationController
 
   def update
     current_task = Task.find(params[:id])
+    last_status_id = current_task.project.statuses.last.id
     unless params[:row_index].nil?
       unless params[:column_id].nil?
         # move to new status
         new_status = Status.find(params[:column_id])
-        current_task.status = new_status
-        current_task.row_index = new_status.tasks.size
-        current_task.save
+        current_task.update(status: new_status, row_index: new_status.tasks.size)
+        if params[:column_id] === last_status_id
+          current_task.update(is_done: true, done_date: Date.today)
+        else 
+          current_task.update(is_done: false, done_date: nil)
+        end
       end
       # move in old status
       new_index = params[:row_index]

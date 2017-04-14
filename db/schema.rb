@@ -165,6 +165,7 @@ ActiveRecord::Schema.define(version: 20170414060659) do
     t.integer  "status_id"
     t.integer  "row_index"
     t.boolean  "is_done",       default: false
+    t.date     "done_date"
   end
 
   add_index "tasks", ["feature_id"], name: "index_tasks_on_feature_id", using: :btree
