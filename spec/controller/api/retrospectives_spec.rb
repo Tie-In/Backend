@@ -15,7 +15,14 @@ describe Api::V1::RetrospectivesController, type: :controller do
       post :create, retrospective: @retro_json
     end
 
+    it 'start retrospective which sprint is not ended' do
+      allow(controller).to receive(:current_user).and_return(@user)
+      subject
+      expect(response).to have_http_status(:bad_request)
+    end
+
     it 'start retrospective' do
+      @sprint.update(is_ended: true)
       allow(controller).to receive(:current_user).and_return(@user)
       subject
       expect(response).to have_http_status(:created)
