@@ -6,12 +6,12 @@ class Api::V1::TasksController < ApplicationController
     project = Project.find(params[:project])
     if params[:sprint] == "backlog"
       backlog_tasks = Task.where(project: project, sprint: nil)
-      render json: backlog_tasks, include: [:feature], status: 200
+      render json: backlog_tasks, include: [:feature, :status], status: 200
     elsif params[:sprint]
       sprint_tasks = Task.where(project: project, sprint: params[:sprint])
-      render json: sprint_tasks, include: [:feature], status: 200
+      render json: sprint_tasks, include: [:feature, :status], status: 200
     else
-      render json: project.tasks, status: 200
+      render json: project.tasks, include: [:feature, :status], status: 200
     end
   end
 

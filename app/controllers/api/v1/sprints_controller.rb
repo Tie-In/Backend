@@ -4,7 +4,7 @@ class Api::V1::SprintsController < ApplicationController
 
   def create
     sprint = Sprint.new(create_params)
-    sprint.number = sprint.project.sprints.size + 1
+    sprint.update(start_date: Date.today, number: sprint.project.sprints.size + 1)
     if sprint.save
       project = sprint.project
       project.current_sprint_id = sprint.id
@@ -21,6 +21,7 @@ class Api::V1::SprintsController < ApplicationController
       end
       render json: sprint, status: 201
     else
+      sprint.destroy
       render json: { errors: sprint.errors }, status: 422
     end
   end
@@ -60,7 +61,7 @@ class Api::V1::SprintsController < ApplicationController
 
   private
   def create_params
-    params.permit(:number, :project_id, :start_date, :sprint_points)
+    params.require(:sprint).permit(:project_id, :sprint_points)
   end
 
   def update_params
