@@ -34,10 +34,23 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     user = current_user
-    if user.update(update_params)
-      render json: user, include: [:organizations, :projects], status: 200
-    else
-      render json: { errors: user.errors }, status: 422
+    unless params[:current_password].nil?
+      current_password = params[:current_password]
+      if user.valid_password? current_password
+        if user.update(password: params[:new_password], password_confirmation: params[:confirm_new_password])
+          render json: { massage: "Changing password done"}, statu: 200
+        else
+          render json: { errors: "New password incorrect" }, status: 422
+        end
+      else
+        render json: { errors: "Current password incorrect" }, status: 422
+      end
+    else 
+      if user.update(update_params)
+        render json: user, include: [:organizations, :projects], status: 200
+      else
+        render json: { errors: user.errors }, status: 422
+      end
     end
   end
 

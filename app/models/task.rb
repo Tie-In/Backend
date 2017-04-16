@@ -8,5 +8,5 @@ class Task < ActiveRecord::Base
   has_many :task_tags, :dependent => :destroy
   has_many :tags, :through => :task_tags
 
-  default_scope { order(row_index: :asc) }
+  default_scope { order(row_index: :asc, id: :asc) }
 end
