@@ -1,5 +1,5 @@
 class Api::V1::RetrospectivesController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create, :update]
+  before_action :authenticate_with_token!, only: [:create, :update, :show]
   respond_to :json
 
   def create
@@ -23,6 +23,15 @@ class Api::V1::RetrospectivesController < ApplicationController
       render json: retro, status: 200
     else
       render json: { errors: retro.errors }, status: 422
+    end
+  end
+
+  def show
+    retro = Retrospective.find(params[:id])
+    if retro.sprint.project.users.include?(current_user)
+      render json: retro, include: [:viewpoints], status: 200
+    else
+      render json: { errors: 'Permission denied' }, status: 401
     end
   end
 
