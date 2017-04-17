@@ -4,16 +4,20 @@ class Api::V1::RetrospectivesController < ApplicationController
 
   def create
     sprint = Sprint.find(create_params[:sprint_id])
-    if sprint.is_ended
-      retro = Retrospective.new(create_params)
-      retro.update(status: :in_progress, number: sprint.number, project: sprint.project)
-      if retro.save
-        render json: retro, status: 201
-      else
-        render json: { errors: retro.errors }, status: 422
+    if sprint.retrospective.nil?
+      if sprint.is_ended
+        retro = Retrospective.new(create_params)
+        retro.update(status: :in_progress, number: sprint.number, project: sprint.project)
+        if retro.save
+          render json: retro, status: 201
+        else
+          render json: { errors: retro.errors }, status: 422
+        end
+      else 
+        render json: { errors: "Sprint is still in progress. Please, close sprint before create the retrospective" }, status: 400
       end
     else 
-      render json: { errors: "Sprint is still in progress. Please, close sprint before create the retrospective" }, status: 400
+      render json: { msg: "Retrospective is already created" }, status: 200
     end
   end
 
