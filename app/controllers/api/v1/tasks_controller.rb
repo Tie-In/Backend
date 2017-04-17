@@ -78,10 +78,14 @@ class Api::V1::TasksController < ApplicationController
           end
         end
         statuses = current_task.project.statuses
+        temp_statuses = statuses
+        statuses.each_with_index do |status, index| 
+          temp_statuses[index].tasks = status.tasks.where(sprint: current_task.sprint)
+        end
         # render all status in project (bad way)
         respond_to do |format|
-          format.json { render :json => { :task => current_task.as_json(include: [:tags, :feature]),
-                                          :statuses => statuses.as_json(include: { tasks: { include: [:tags, :feature] }}) }}
+          format.json { render :json => { :task => current_task.as_json(include: [:tags, :feature, :user]),
+                                          :statuses => temp_statuses.as_json(include: { tasks: { include: [:tags, :feature] }}) }}
         end
         # render json: current_task, include: [:tags, :feature], status: 200
       else

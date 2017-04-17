@@ -30,9 +30,13 @@ class Api::V1::SprintsController < ApplicationController
     sprint = Sprint.find(params[:id])
     if sprint.project.users.include?(current_user)
       statuses = sprint.project.statuses
+      temp_statuses = statuses
+      statuses.each_with_index do |status, index| 
+        temp_statuses[index].tasks = status.tasks.where(sprint_id: params[:id])
+      end
       respond_to do |format|
         format.json { render :json => { :sprint => sprint.as_json,
-                                        :statuses => statuses.as_json(include: { tasks: { include: [:tags, :feature] }}) }}
+                                        :statuses => temp_statuses.as_json(include: { tasks: { include: [:tags, :feature, :user] }}) }}
       end
     else
       render json: { errors: 'Permission denied' }, status: 401
