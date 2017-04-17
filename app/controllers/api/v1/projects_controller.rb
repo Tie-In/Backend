@@ -5,8 +5,11 @@ class Api::V1::ProjectsController < ApplicationController
   def show
     project = Project.find(params[:id])
     if project.users.include?(current_user)
-      render json: project, include: [:tags, :statuses, :features, :effort_estimation, :users, sprints: { include: :retrospective }, project_contributes: { include: [ user: { except: :auth_token }]}]
-    else
+      render json: project.as_json(include: [
+        :tags, :statuses, :features, { project_contributes: { include: [:user] }}, 
+        :effort_estimation, { sprints: { include: [:retrospective] }}, :users
+      ]), status: 200
+  else
       render json: { errors: 'Permission denied' }, status: 401
     end
   end
