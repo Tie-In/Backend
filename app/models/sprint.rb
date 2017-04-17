@@ -3,4 +3,6 @@ class Sprint < ActiveRecord::Base
 
   has_many :tasks
   has_one :retrospective
+
+  default_scope { order(number: :asc) }
 end
