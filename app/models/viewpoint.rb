@@ -1,5 +1,5 @@
 class Viewpoint < ActiveRecord::Base
-    enum type: [:good, :bad, :try]
+    enum kind: [:good, :bad, :try]
 
     belongs_to :retrospective
     belongs_to :user

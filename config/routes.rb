@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       resources :tags
       resources :statuses
       resources :retrospectives, :only => [:create, :update]
+      resources :viewpoints, :only => [:create, :update]
+      resources :viewpoints_categories, :only => [:create]
     end
   end
 end

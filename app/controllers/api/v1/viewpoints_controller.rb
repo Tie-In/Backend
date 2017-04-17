@@ -3,13 +3,15 @@ class Api::V1::ViewpointsController < ApplicationController
   respond_to :json
 
   def create
-    view = Viewpoint.new(create_params)
-    if view.save
-      view.user = current_user
-      render json: view, status: 201
-    else
-      render json: { errors: view.errors }, status: 422
+    create_params[:viewpoints].each do |viewpoint_params|
+      view = Viewpoint.new(viewpoint_params)
+      view.update(user: current_user, retrospective_id: params[:retrospective_id])
+      unless view.save
+        render json: { errors: view.errors }, status: 422
+      end
     end
+    all_viewpoints = current_user.viewpoints.where(retrospective_id: params[:retrospective_id])
+    render json: all_viewpoints, status: 201
   end
 
   def update
@@ -23,10 +25,10 @@ class Api::V1::ViewpointsController < ApplicationController
 
   private
   def create_params
-    params.require(:viewpoint).require(:comment, :type, :retrospective_id)
+    params.permit(:viewpoints => [:comment, :kind])
   end
 
   def update_params
-    params.require(:viewpoint).require(:viewpoint_category_id)
+    params.require(:viewpoint).permit(:viewpoint_category_id)
   end
 end
