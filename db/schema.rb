@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170417103344) do
+ActiveRecord::Schema.define(version: 20170418064944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20170417103344) do
     t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "time_limit"
   end
 
   add_index "retrospectives", ["project_id"], name: "index_retrospectives_on_project_id", using: :btree

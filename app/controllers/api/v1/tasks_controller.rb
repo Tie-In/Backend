@@ -1,24 +1,26 @@
 class Api::V1::TasksController < ApplicationController
-  before_action :authenticate_with_token!, only: [:index, :create, :show, :update]
+  before_action :authenticate_with_token!, only: [:create, :update, :show]
 	respond_to :json
 
   def index
-    project = Project.find(params[:project])
-    if params[:sprint] == "backlog"
-      backlog_tasks = Task.where(project: project, sprint: nil)
-      render json: backlog_tasks, include: [:feature, :status], status: 200
-    elsif params[:sprint]
-      sprint_tasks = Task.where(project: project, sprint: params[:sprint])
-      render json: sprint_tasks, include: [:feature, :status], status: 200
+    unless params[:project].nil?
+      project = Project.find(params[:project])
+      if params[:sprint] == "backlog"
+        @tasks = Task.where(project: project, sprint: nil)
+      elsif params[:sprint]
+        @tasks = Task.where(project: project, sprint: params[:sprint])
+      else
+        @tasks = project.tasks
+      end
     else
-      render json: project.tasks, include: [:feature, :status], status: 200
+      @tasks = Task.all
     end
   end
 
   def show
-    task = Task.find(params[:id])
-    if task.project.users.include?(current_user)
-      render json: task, include: [:tags], status: 200
+    @task = Task.find(params[:id])
+    if @task.project.users.include?(current_user)
+      @task
     else
       render json: { errors: 'Permission denied' }, status: 401
     end

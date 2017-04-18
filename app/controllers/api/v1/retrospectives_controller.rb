@@ -41,7 +41,7 @@ class Api::V1::RetrospectivesController < ApplicationController
 
   private
   def create_params
-    params.require(:retrospective).permit(:sprint_id)
+    params.require(:retrospective).permit(:sprint_id, :time_limit)
   end
 
   def update_params

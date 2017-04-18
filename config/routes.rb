@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       resources :projects
       resources :sprints, :only => [:show, :create, :update]
       resources :effort_estimations, :only => [:show, :create]
-      resources :tasks, :only => [:index, :create, :update]
+      resources :tasks
       resources :tags
       resources :statuses
       resources :retrospectives, :only => [:create, :update, :show]
