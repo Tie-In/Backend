@@ -17,6 +17,8 @@ class Api::V1::EffortEstimationsController < ApplicationController
     effort[:lower_weeks] = weeks[0]
     effort[:upper_weeks] = weeks[1]
     if effort.save
+      project.effort_estimation_id = effort.id
+      project.save
       features_params[:features].each do |feature|
         temp = Feature.new(feature)
         temp.project = project
@@ -37,14 +39,13 @@ class Api::V1::EffortEstimationsController < ApplicationController
   end
 
   def show
-    project = Project.find(params[:id])
-    if project.users.include?(current_user)
-      estimation = project.effort_estimation
+    estimation = EffortEstimation.find(params[:id])
+    if estimation.project.users.include?(current_user)
       respond_to do |format|
         format.json  { render :json => {:effort_estimation => estimation.as_json,
                                         :technical_factor => estimation.technical_factor.as_json,
                                         :environmental_factor => estimation.environmental_factor.as_json,
-                                        :features => project.features.as_json }}
+                                        :features => estimation.project.features.as_json }}
       end
     else
       render json: { errors: 'Permission denied' }, status: 401

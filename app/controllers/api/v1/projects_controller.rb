@@ -53,7 +53,7 @@ class Api::V1::ProjectsController < ApplicationController
   private
   def create_params
     params.require(:project)
-      .permit(:name, :organization_id, :description, :sprint_duration)
+      .permit(:name, :organization_id, :description, :sprint_duration, :max_story_point)
   end
 
   def update_params

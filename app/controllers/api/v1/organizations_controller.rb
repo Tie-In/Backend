@@ -5,7 +5,7 @@ class Api::V1::OrganizationsController < ApplicationController
   def show
     org = Organization.find(params[:id])
     if org.users.include?(current_user)
-      render json: org, include: { projects: { include: [ users: { except: :auth_token } ] }, user_organizations: { include: [ user: { except: :auth_token }]} }
+      render json: org, include: { projects: { include: [ :effort_estimation, users: { except: :auth_token } ] }, user_organizations: { include: [ user: { except: :auth_token }]} }
     else
       render json: { errors: 'Permission denied' }, status: 401
     end

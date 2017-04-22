@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170418064944) do
+ActiveRecord::Schema.define(version: 20170420121344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,8 +90,12 @@ ActiveRecord::Schema.define(version: 20170418064944) do
     t.integer  "technical_factor_id"
     t.integer  "environmental_factor_id"
     t.integer  "current_sprint_id"
+    t.integer  "max_sprint_point"
+    t.integer  "max_story_point"
+    t.integer  "effort_estimation_id"
   end
 
+  add_index "projects", ["effort_estimation_id"], name: "index_projects_on_effort_estimation_id", using: :btree
   add_index "projects", ["environmental_factor_id"], name: "index_projects_on_environmental_factor_id", using: :btree
   add_index "projects", ["organization_id"], name: "index_projects_on_organization_id", using: :btree
   add_index "projects", ["technical_factor_id"], name: "index_projects_on_technical_factor_id", using: :btree
@@ -115,10 +119,9 @@ ActiveRecord::Schema.define(version: 20170418064944) do
     t.date     "end_date"
     t.integer  "project_id"
     t.integer  "sprint_points"
-    t.integer  "maximum_points"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.boolean  "is_ended",       default: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.boolean  "is_ended",      default: false
   end
 
   add_index "sprints", ["project_id"], name: "index_sprints_on_project_id", using: :btree
