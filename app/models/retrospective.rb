@@ -4,4 +4,5 @@ class Retrospective < ActiveRecord::Base
   belongs_to :sprint
 
   has_many :viewpoints
+  has_many :viewpoint_categories
 end
