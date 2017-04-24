@@ -1,5 +1,5 @@
 class Api::V1::SprintsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create, :show]
+  # before_action :authenticate_with_token!, only: [:create]
 	respond_to :json
 
   def create
@@ -31,7 +31,7 @@ class Api::V1::SprintsController < ApplicationController
     if sprint.project.users.include?(current_user)
       statuses = sprint.project.statuses
       temp_statuses = statuses
-      statuses.each_with_index do |status, index| 
+      statuses.each_with_index do |status, index|
         temp_statuses[index].tasks = status.tasks.where(sprint_id: params[:id])
       end
       respond_to do |format|

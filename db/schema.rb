@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170420121344) do
+ActiveRecord::Schema.define(version: 20170424093515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,14 +252,14 @@ ActiveRecord::Schema.define(version: 20170420121344) do
     t.integer  "user_id"
     t.integer  "kind"
     t.boolean  "selected"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "viewpoint_categories_id"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.integer  "viewpoint_category_id"
   end
 
   add_index "viewpoints", ["retrospective_id"], name: "index_viewpoints_on_retrospective_id", using: :btree
   add_index "viewpoints", ["user_id"], name: "index_viewpoints_on_user_id", using: :btree
-  add_index "viewpoints", ["viewpoint_categories_id"], name: "index_viewpoints_on_viewpoint_categories_id", using: :btree
+  add_index "viewpoints", ["viewpoint_category_id"], name: "index_viewpoints_on_viewpoint_category_id", using: :btree
 
   add_foreign_key "effort_estimations", "projects"
   add_foreign_key "environmental_factors", "effort_estimations"

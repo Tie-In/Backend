@@ -1,4 +1,4 @@
 class ViewpointCategory < ActiveRecord::Base
     belongs_to :retrospective
-    has_many :categories
+    has_many :viewpoints
 end
