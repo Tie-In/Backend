@@ -50,12 +50,14 @@ class Api::V1::SprintsController < ApplicationController
         sprint.update(end_date: Date.today)
         project = Project.find(sprint.project_id)
         project.update(current_sprint_id: nil)
-        done_status = project.statuses.find_by(name: "Done").id
-        undone_tasks = sprint.tasks.where(project: sprint.project_id).where.not(status_id: done_status)
+        done_status = project.statuses.find_by(name: "Done")
+        done_count = done_status.tasks.size
+        undone_tasks = sprint.tasks.where(project: sprint.project_id).where.not(status_id: done_status.id)
+        postpone_count = undone_tasks.size
         undone_tasks.each do |task|
           task.update(sprint: nil, status: nil, row_index: nil)
         end
-        
+        sprint.update(postpone_count: postpone_count, done_count: done_count)
       end
       render json: sprint, status: 200
     else
