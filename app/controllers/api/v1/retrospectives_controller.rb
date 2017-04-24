@@ -23,21 +23,28 @@ class Api::V1::RetrospectivesController < ApplicationController
 
   def update
     retro = Retrospective.find(params[:id])
-    if retro.update(update_params)
-      render json: retro, status: 200
+    unless params[:is_important].nil?
+      important_params[:viewpoints].each do |viewpoint|
+        view = Viewpoint.find(viewpoint[:id])
+        if view.retrospective_id.to_s == params[:id]
+          view.update(is_important: true)
+        end
+      end
     else
-      render json: { errors: retro.errors }, status: 422
+      unless retro.update(update_params)
+        render json: { errors: retro.errors }, status: 422
+      end
     end
+    render json: retro.as_json(include: [ { viewpoints: { include: [:viewpoint_category] }} ]), status: 200
   end
 
   def show
     retro = Retrospective.find(params[:id])
-    # if retro.sprint.project.users.include?(current_user)
-      # render json: retro, include: { viewpoints: { include: [ :viewpoint_category ] } }, status: 200
+    if retro.sprint.project.users.include?(current_user)
       render json: retro.as_json(include: [ { viewpoints: { include: [:viewpoint_category] }} ]), status: 200
-    #  else
-    #   render json: { errors: 'Permission denied' }, status: 401
-    # end
+     else
+      render json: { errors: 'Permission denied' }, status: 401
+    end
   end
 
   private
@@ -47,5 +54,9 @@ class Api::V1::RetrospectivesController < ApplicationController
 
   def update_params
     params.require(:retrospective).permit(:status)
+  end
+
+  def important_params
+    params.require(:is_important).permit(:viewpoints => [:id])
   end
 end
