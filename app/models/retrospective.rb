@@ -5,4 +5,8 @@ class Retrospective < ActiveRecord::Base
 
   has_many :viewpoints
   has_many :viewpoint_categories
+
+  has_many :retrospective_contributes, :dependent => :destroy
+  has_many :users, :through => :retrospective_contributes
+
 end

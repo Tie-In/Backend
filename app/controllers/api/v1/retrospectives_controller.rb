@@ -1,5 +1,5 @@
 class Api::V1::RetrospectivesController < ApplicationController
-  # before_action :authenticate_with_token!, only: [:create, :update, :show]
+  before_action :authenticate_with_token!, only: [:create]
   respond_to :json
 
   def create
@@ -8,6 +8,7 @@ class Api::V1::RetrospectivesController < ApplicationController
       if sprint.is_ended
         retro = Retrospective.new(create_params)
         retro.update(status: :in_progress, number: sprint.number, project: sprint.project)
+        ProjectContribute.new(user: current_user, retrospective: retro).save
         if retro.save
           render json: retro, status: 201
         else
@@ -41,7 +42,7 @@ class Api::V1::RetrospectivesController < ApplicationController
   def show
     retro = Retrospective.find(params[:id])
     if retro.sprint.project.users.include?(current_user)
-      render json: retro.as_json(include: [ { viewpoints: { include: [:viewpoint_category] }} ]), status: 200
+      render json: retro.as_json(include: [ { viewpoints: { include: [:viewpoint_category] }}, :retrospective_contributes ]), status: 200
      else
       render json: { errors: 'Permission denied' }, status: 401
     end

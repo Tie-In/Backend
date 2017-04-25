@@ -5,6 +5,9 @@ class User < ActiveRecord::Base
   has_many :project_contributes, :dependent => :destroy
   has_many :projects, :through => :project_contributes
 
+  has_many :retrospective_contributes, :dependent => :destroy
+  has_many :retrospectives, :through => :retrospective_contributes
+
   has_many :viewpoints
 
   # Include default devise modules. Others available are:

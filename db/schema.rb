@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170424141757) do
+ActiveRecord::Schema.define(version: 20170425164834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,16 @@ ActiveRecord::Schema.define(version: 20170424141757) do
   add_index "projects", ["environmental_factor_id"], name: "index_projects_on_environmental_factor_id", using: :btree
   add_index "projects", ["organization_id"], name: "index_projects_on_organization_id", using: :btree
   add_index "projects", ["technical_factor_id"], name: "index_projects_on_technical_factor_id", using: :btree
+
+  create_table "retrospective_contributes", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "retrospective_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "retrospective_contributes", ["retrospective_id"], name: "index_retrospective_contributes_on_retrospective_id", using: :btree
+  add_index "retrospective_contributes", ["user_id"], name: "index_retrospective_contributes_on_user_id", using: :btree
 
   create_table "retrospectives", force: :cascade do |t|
     t.integer  "number"
@@ -272,6 +282,8 @@ ActiveRecord::Schema.define(version: 20170424141757) do
   add_foreign_key "projects", "environmental_factors"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "technical_factors"
+  add_foreign_key "retrospective_contributes", "retrospectives"
+  add_foreign_key "retrospective_contributes", "users"
   add_foreign_key "retrospectives", "projects"
   add_foreign_key "retrospectives", "sprints"
   add_foreign_key "sprints", "projects"
