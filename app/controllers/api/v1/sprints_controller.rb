@@ -31,11 +31,8 @@ class Api::V1::SprintsController < ApplicationController
     if sprint.project.users.include?(current_user)
       statuses = sprint.project.statuses
       temp_statuses = statuses
-      statuses.each_with_index do |status, index|
-        temp_statuses[index].tasks = status.tasks.where(sprint_id: params[:id])
-      end
       respond_to do |format|
-        format.json { render :json => { :sprint => sprint.as_json,
+        format.json { render :json => { :sprint => sprint.as_json(include: [:tasks]),
                                         :statuses => temp_statuses.as_json(include: { tasks: { include: [:tags, :feature, :user] }}) }}
       end
     else
@@ -53,6 +50,9 @@ class Api::V1::SprintsController < ApplicationController
         done_status = project.statuses.find_by(name: "Done")
         done_count = done_status.tasks.size
         undone_tasks = sprint.tasks.where(project: sprint.project_id).where.not(status_id: done_status.id)
+        done_status.tasks.each do |task|
+          task.update(status: nil)
+        end
         postpone_count = undone_tasks.size
         undone_tasks.each do |task|
           task.update(sprint: nil, status: nil, row_index: nil)
