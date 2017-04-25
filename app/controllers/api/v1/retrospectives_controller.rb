@@ -30,6 +30,7 @@ class Api::V1::RetrospectivesController < ApplicationController
           view.update(is_important: true)
         end
       end
+      retro.update(status: "done")
     else
       unless retro.update(update_params)
         render json: { errors: retro.errors }, status: 422
@@ -57,6 +58,6 @@ class Api::V1::RetrospectivesController < ApplicationController
   end
 
   def important_params
-    params.require(:is_important).permit(:viewpoints => [:id])
+    params.require(:is_important).permit(:viewpoints => [:id], :status)
   end
 end
