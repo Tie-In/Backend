@@ -42,7 +42,7 @@ class Api::V1::RetrospectivesController < ApplicationController
   def show
     retro = Retrospective.find(params[:id])
     if retro.sprint.project.users.include?(current_user)
-      render json: retro.as_json(include: [ { viewpoints: { include: [:viewpoint_category] }}, :retrospective_contributes ]), status: 200
+      render json: retro.as_json(include: [ { viewpoints: { include: [:viewpoint_category] }}, { retrospective_contributes: { include: [:user] }}]), status: 200
      else
       render json: { errors: 'Permission denied' }, status: 401
     end
