@@ -6,6 +6,7 @@ class Api::V1::ViewpointsController < ApplicationController
     create_params[:viewpoints].each do |viewpoint_params|
       view = Viewpoint.new(viewpoint_params)
       view.update(user: current_user, retrospective_id: params[:retrospective_id])
+      RetrospectiveContribute.new(user: current_user, retrospective_id: params[:retrospective_id]).save
       unless view.save
         render json: { errors: view.errors }, status: 422
       end

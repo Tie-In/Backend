@@ -1,5 +1,5 @@
 class Api::V1::RetrospectivesController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create]
+  before_action :authenticate_with_token!, only: [:create, :update]
   respond_to :json
 
   def create
@@ -8,7 +8,6 @@ class Api::V1::RetrospectivesController < ApplicationController
       if sprint.is_ended
         retro = Retrospective.new(create_params)
         retro.update(status: :in_progress, number: sprint.number, project: sprint.project)
-        RetrospectiveContribute.new(user: current_user, retrospective: retro).save
         if retro.save
           render json: retro, status: 201
         else
