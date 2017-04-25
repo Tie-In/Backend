@@ -3,31 +3,30 @@ class Api::V1::UsersController < ApplicationController
 	respond_to :json
 
   def index
+    @users = User.all
     if !params[:organization].nil?
-      users = Organization.find(params[:organization]).users
+      @users = Organization.find(params[:organization]).users
     elsif !params[:project].nil?
-      users = Project.find(params[:project]).users
-    else
-      users = User.all
+      @users = Project.find(params[:project]).users
     end
     # remove current user if have auth_token header
     unless request.headers['Authorization'].nil?
-      users = users.reject { |a| a.id == current_user.id }
+      @users = @users.reject { |a| a.id == current_user.id }
     end
-    render json: users, only: [:id, :username, :email, :image]
+    @users
   end
 
   def show
-    respond_with User.find(params[:id]), except: [:auth_token], include: [:organizations, :projects]
+    @user = User.find(params[:id])
   end
 
   def create
     ActiveRecord::Base.transaction do
-      user = User.new(create_params)
-      if user.save
-        render json: user, include: [:organizations, :projects], status: 201
+      @user = User.new(create_params)
+      if @user.save
+        render json: @user, include: [:organizations, :projects], status: 201
       else
-        render json: { errors: user.errors }, status: 422
+        render json: { errors: @user.errors }, status: 422
       end
     end
   end

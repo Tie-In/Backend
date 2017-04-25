@@ -55,7 +55,7 @@ class Api::V1::SprintsController < ApplicationController
         end
         postpone_count = undone_tasks.size
         undone_tasks.each do |task|
-          task.update(sprint: nil, status: nil, row_index: nil)
+          task.update(sprint: nil, status: nil, row_index: nil, story_point: nil)
         end
         sprint.update(postpone_count: postpone_count, done_count: done_count)
       end

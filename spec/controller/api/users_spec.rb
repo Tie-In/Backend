@@ -2,22 +2,6 @@ require 'rails_helper'
 
 describe Api::V1::UsersController, type: :controller do
 
-  context 'GET #index' do
-    before(:all) do
-      FactoryGirl.create_list(:user, 5)
-    end
-
-    it 'all users' do
-      get :index
-
-      users = JSON.parse(response.body)
-      # test for the 200 status-code
-      expect(response).to be_success
-
-      expect(users.length).to eq(5)
-    end
-  end
-
   context 'POST #create' do
     before(:each) do
       @user = {
