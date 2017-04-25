@@ -8,7 +8,7 @@ class Api::V1::RetrospectivesController < ApplicationController
       if sprint.is_ended
         retro = Retrospective.new(create_params)
         retro.update(status: :in_progress, number: sprint.number, project: sprint.project)
-        ProjectContribute.new(user: current_user, retrospective: retro).save
+        RetrospectiveContribute.new(user: current_user, retrospective: retro).save
         if retro.save
           render json: retro, status: 201
         else
